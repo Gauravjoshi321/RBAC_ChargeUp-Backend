@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require('path');
 const cors = require('cors');
+const userRoute = require("./userRoute");
 
 const app = express();
 
@@ -13,9 +14,7 @@ app.use(cors());
 // 2. Serving static files: All static assets will be served through the Public folder
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get("/", function (req, res) {
-  res.send({ "status": "success" })
-})
+app.use('/', userRoute);
 
 
 module.exports = app;
