@@ -1,6 +1,8 @@
-const app = require("express")();
+const express = require("express");
 const path = require('path');
 const cors = require('cors');
+
+const app = express();
 
 // 1. Body parser
 app.use(express.json({ limit: '10kb' }));
