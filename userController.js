@@ -1,10 +1,11 @@
+const AppError = require("./AppError");
 const User = require("./userModel");
 
 exports.getAllUser = async function (req, res) {
 
   const users = await User.find();
 
-  res.send({
+  res.status(200).json({
     "status": "Success",
     "data": {
       users
@@ -12,14 +13,26 @@ exports.getAllUser = async function (req, res) {
   })
 }
 
-exports.createUser = async function (req, res) {
+exports.signUp = async function (req, res) {
+  console.log(req.body);
 
-  const users = await User.find();
+  const user = await User.create(req.body);
 
-  res.send({
+  res.status(200).json({
     "status": "Success",
     "data": {
-      users
+      user
     }
   })
+}
+
+exports.loginUser = async function (req, res, next) {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) return next(new AppError("Invalid Credentials", 401));
+  } catch (err) {
+    next(err);
+  }
+
 }
