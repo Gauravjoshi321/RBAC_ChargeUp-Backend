@@ -11,4 +11,4 @@ const dataSchema = new mongoose.Schema({
 
 const Data = mongoose.model('Data', dataSchema);
 
-exports.module = Data;
+module.exports = Data;

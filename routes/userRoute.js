@@ -3,7 +3,7 @@ const { getAllUser, signUp, loginUser, protect } = require("../controllers/userC
 
 const router = express.Router();
 
-router.get("/", protect, getAllUser);
+router.get("/getAllUsers", protect, getAllUser);
 router.post("/signup", signUp);
 router.post("/login", loginUser);
 

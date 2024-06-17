@@ -2,6 +2,7 @@ const express = require("express");
 const path = require('path');
 const cors = require('cors');
 const userRoute = require("./routes/userRoute");
+const dataRoute = require("./routes/dataRoute");
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', userRoute);
+app.use('/data', dataRoute)
 
 app.use((err, req, res, next) => {
   res.status(err.statusCode).json({ err });
