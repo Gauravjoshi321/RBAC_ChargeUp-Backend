@@ -64,7 +64,7 @@ exports.loginUser = async function (req, res, next) {
   const { email, password } = req.body;
 
   // 1. Check password and email are entered by the user
-  if (!email || !password) return next(new AppError("Invalid Credentials", 401));
+  if (!email || !password) return next(new AppError("Please provide the credentials correctly.", 401));
 
   // 2. Check if these credentials exist in our DataBase
   const user = await User.findOne({ email }).select('+password');
