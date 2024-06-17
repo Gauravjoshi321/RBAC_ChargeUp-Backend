@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const dataSchema = new mongoose.Schema({
   drivers: String,
   earning: String,
-  co2Saved: String,
+  reducedCO2: String,
   stations: String,
   treesPlanted: String
 })
