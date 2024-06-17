@@ -1,5 +1,5 @@
-const AppError = require("./AppError");
-const User = require("./userModel");
+const AppError = require("../utils/AppError");
+const User = require("../models/userModel");
 const jwt = require('jsonwebtoken');
 const util = require('util');
 
@@ -54,6 +54,12 @@ exports.signUp = async function (req, res) {
   })
 }
 
+const restrictTo = function (user) {
+  if (user.role === "user")
+    return false;
+  return true;
+}
+
 exports.loginUser = async function (req, res, next) {
   const { email, password } = req.body;
 
@@ -70,7 +76,11 @@ exports.loginUser = async function (req, res, next) {
     return next(new AppError('Wrong email or password', 401));
   }
 
-  // 3. If OK, then provide the JSON web token
+  // 3. Check for access
+  const canAccess = restrictTo(user);
+  if (!canAccess) return next(new AppError("You don't have access. Please contact to Admin.", 403));
+
+  // 4. If OK, then provide the JSON web token
   createSendToken(user, 200, res, req);
 }
 
