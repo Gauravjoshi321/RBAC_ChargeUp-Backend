@@ -16,7 +16,7 @@ const createSendToken = (user, statusCode, res, req) => {
     secure: req.secure
   }
 
-  res.cookie('jwt', token, cookieOptions);
+  // res.cookie('jwt', token, cookieOptions);
 
   user.password = undefined;
 
@@ -46,12 +46,7 @@ exports.signUp = async function (req, res) {
 
   const user = await User.create(req.body);
 
-  res.status(200).json({
-    "status": "Success",
-    "data": {
-      user
-    }
-  })
+  createSendToken(user, 201, res, req);
 }
 
 const restrictTo = function (user) {
@@ -86,10 +81,9 @@ exports.loginUser = async function (req, res, next) {
 
 exports.protect = async function (req, res, next) {
 
-  const val = req.headers.cookie;
-  if (val === undefined) return next(new AppError("Your are not logged in. Please Login first", 401));
+  const token = req.headers.token;
 
-  const token = val && val.split("=")[1];
+  if (token === undefined || token === "null") return next(new AppError("Your are not logged in. Please Login first", 401));
 
   // 2. Verification of the token
   const decoded = await util.promisify(jwt.verify)(token, process.env.JWT_SECRET);
@@ -100,4 +94,22 @@ exports.protect = async function (req, res, next) {
 
   req.user = freshUser;
   next();
+}
+
+
+exports.checkLoggedInForFront = async function (req, res, next) {
+  //1.
+  const token = req.headers?.token;
+  if (token === undefined || token === "null") return next(new AppError("Your are not logged in. Please Login first", 401));
+
+  // 2. Verification of the token
+  const decoded = await util.promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+  // 3. Check if user still exist
+  const freshUser = await User.findById(decoded.id);
+  if (!freshUser) return next(new AppError("User belonging to this token does no longer exist", 401));
+
+  res.status(200).json({
+    "hasLoggedIn": true
+  })
 }
